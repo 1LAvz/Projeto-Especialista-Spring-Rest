@@ -3,13 +3,11 @@ package com.algaworks.algafood.domain.service;
 import java.io.InputStream;
 import java.util.Optional;
 
-import com.algaworks.algafood.domain.exception.FotoProdutoNaoEncontradaException;
-import com.algaworks.algafood.domain.exception.ProdutoNaoEncontradoException;
-import com.algaworks.algafood.domain.model.Produto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.algaworks.algafood.domain.exception.FotoProdutoNaoEncontradaException;
 import com.algaworks.algafood.domain.model.FotoProduto;
 import com.algaworks.algafood.domain.repository.ProdutoRepository;
 import com.algaworks.algafood.domain.service.FotoStorageService.NovaFoto;
@@ -53,18 +51,19 @@ public class CatalogoFotoProdutoService {
 		return foto;
 	}
 
-	@Transactional
-	public void excluir(Long restauranteId, Long produtoId) {
-		FotoProduto fotoProduto = buscarOuFalhar(restauranteId, produtoId);
-
-		produtoRepository.delete(fotoProduto);
-		produtoRepository.flush();
-
-		fotoStorage.remover(fotoProduto.getNomeArquivo());
-	}
-
 	public FotoProduto buscarOuFalhar(Long restauranteId, Long produtoId) {
 		return produtoRepository.findFotoById(restauranteId, produtoId)
 				.orElseThrow(() -> new FotoProdutoNaoEncontradaException(restauranteId, produtoId));
 	}
+
+	@Transactional
+	public void excluir(Long restauranteId, Long produtoId) {
+		FotoProduto foto = buscarOuFalhar(restauranteId, produtoId);
+		
+		produtoRepository.delete(foto);
+		produtoRepository.flush();
+
+		fotoStorage.remover(foto.getNomeArquivo());
+	}
+	
 }

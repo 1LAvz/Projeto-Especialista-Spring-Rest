@@ -13,35 +13,26 @@ import lombok.Setter;
 @Getter
 @Setter
 @Component
-@ConfigurationProperties("algafood.mail")
-public class MailProperties {
+@ConfigurationProperties("algafood.email")
+public class EmailProperties {
 
-	@NotNull
 	private Implementacao impl = Implementacao.FAKE;
-	private Sandbox sandbox;
+	
 	@NotNull
-	private String from;
-	private String host;
-	private String userName;
-	private String password;
-	private String protocol;
-	private StartTls startTls;
-	private boolean auth;
-	private int port;
-
-	@Getter
-	@Setter
-	public static class StartTls {
-		private boolean enabled;
-	}
-
-	@Getter
-	@Setter
-	public static class Sandbox {
-		private String destinatario;
-	}
-
+	private String remetente;
+	
+	private Sandbox sandbox = new Sandbox();
+	
 	public enum Implementacao {
-		FAKE, SMTP, SANDBOX;
+		SMTP, FAKE, SANDBOX
 	}
+	
+	@Getter
+	@Setter
+	public class Sandbox {
+		
+		private String destinatario;
+		
+	}
+	
 }
